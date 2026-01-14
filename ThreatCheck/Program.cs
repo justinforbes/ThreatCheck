@@ -14,8 +14,7 @@ internal static class Program
 {
     private class Options
     {
-        [Option('e', "engine", Default = "Defender", Required = false,
-            HelpText = "Scanning engine. Options: Defender, AMSI")]
+        [Option('e', "engine", Default = "Defender", Required = false, HelpText = "Scanning engine. Options: Defender, AMSI")]
         public string Engine { get; set; }
 
         [Option('f', "file", Required = false, HelpText = "Analyze a file on disk")]
@@ -71,11 +70,11 @@ internal static class Program
         }
         else if (!string.IsNullOrEmpty(opts.InFile))
         {
-            if (File.Exists(opts.InFile) && opts.FileType == "Bin")
+            if (File.Exists(opts.InFile) && opts.FileType.Equals("Bin", StringComparison.OrdinalIgnoreCase))
             {
                 fileContent = File.ReadAllBytes(opts.InFile);
             }
-            else if (File.Exists(opts.InFile) && opts.FileType == "Script")
+            else if (File.Exists(opts.InFile) && opts.FileType.Equals("Script", StringComparison.OrdinalIgnoreCase))
             {
                 scriptContent = File.ReadAllText(opts.InFile);
             }
@@ -101,7 +100,7 @@ internal static class Program
                 }
                 else
                 {
-                    Console.WriteLine("scritps don't work with defender yet");
+                    Console.WriteLine("Scripts don't work with Defender yet");
                 }
 
                 break;
@@ -163,7 +162,7 @@ internal static class Program
     private static void ScanWithAmsi(string file)
     {
 
-        var filebytes = Encoding.Unicode.GetBytes(file);
+        var fileBytes = Encoding.Unicode.GetBytes(file);
         using var amsi = new AmsiScanner();
 
         if (!amsi.RealTimeProtectionEnabled)
@@ -172,6 +171,6 @@ internal static class Program
             return;
         }
 
-        amsi.AnalyzeBytes(filebytes);
+        amsi.AnalyzeBytes(fileBytes);
     }
 }
